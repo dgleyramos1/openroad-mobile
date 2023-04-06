@@ -1,13 +1,26 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View,
     Text,
     StyleSheet,
-    Image,
     TextInput,
     TouchableOpacity
 } from 'react-native';
 
+
 export default function SignIn(){
+    const [email, setEmail] = useState("");
+    const [pass, setPass] = useState("");
+
+    function handleLogin(){
+        if(email === '' || pass === ''){
+            return
+        }
+
+        setEmail("");
+        setPass("");
+    }
+
+
     return(
         <View style={styles.container}>
             <Text style={styles.logo}>OpenRoad</Text>
@@ -16,14 +29,21 @@ export default function SignIn(){
                     placeholder='Digite seu e-mail'
                     style={styles.input}
                     placeholderTextColor="#f0f0f0"
+                    value={email}
+                    onChangeText={setEmail}
                 />
                 <TextInput 
                     placeholder='Digite sua senha'
                     style={styles.input}
                     placeholderTextColor="#f0f0f0"
+                    value={pass}
+                    onChangeText={setPass}
                 />
 
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleLogin}
+                >
                     <Text style={styles.buttonText}>Acessar</Text>
                 </TouchableOpacity>
             </View>
@@ -31,7 +51,7 @@ export default function SignIn(){
     )
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create({  
     container:{
         flex:1,
         justifyContent: 'center',
