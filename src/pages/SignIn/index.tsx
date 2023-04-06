@@ -1,23 +1,25 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {View,
     Text,
     StyleSheet,
     TextInput,
     TouchableOpacity
 } from 'react-native';
+import { AuthContext } from '../../contexts/AuthContext';
 
 
 export default function SignIn(){
-    const [email, setEmail] = useState("");
-    const [pass, setPass] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
 
-    function handleLogin(){
-        if(email === '' || pass === ''){
+    const {signIn} = useContext(AuthContext);
+
+    async function handleLogin(){
+        if(username === '' || password === ''){
             return
         }
 
-        setEmail("");
-        setPass("");
+        await signIn({username, password});
     }
 
 
@@ -26,18 +28,18 @@ export default function SignIn(){
             <Text style={styles.logo}>OpenRoad</Text>
             <View style={styles.inputContainer}>
                 <TextInput 
-                    placeholder='Digite seu e-mail'
+                    placeholder='Digite seu usuário'
                     style={styles.input}
                     placeholderTextColor="#f0f0f0"
-                    value={email}
-                    onChangeText={setEmail}
+                    value={username}
+                    onChangeText={setUsername}
                 />
                 <TextInput 
                     placeholder='Digite sua senha'
                     style={styles.input}
                     placeholderTextColor="#f0f0f0"
-                    value={pass}
-                    onChangeText={setPass}
+                    value={password}
+                    onChangeText={setPassword}
                 />
 
                 <TouchableOpacity
