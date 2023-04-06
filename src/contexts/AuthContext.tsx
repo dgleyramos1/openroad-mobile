@@ -1,7 +1,8 @@
 import React, {useState, createContext, ReactNode, useEffect} from "react";
-import { api } from "../servers/api"; 
+import { api} from "../servers/api"; 
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 
 type AuthContextData = {
     user: UserProps;
@@ -57,7 +58,8 @@ export function AuhtProvider({children}: AuhtProviderProps){
             const response = await api.post('/login', {
                 username,
                 password
-            })
+            });
+
             const token: string = response.data.replace("{token: ", "").replace("}", "");
 
             const data = {token: token}
