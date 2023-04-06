@@ -54,7 +54,14 @@ export default function Order(){
                 />
             </View>
             
-
+            <View style={styles.actions}>
+                <TouchableOpacity style={styles.buttonAdd}>
+                    <Text style={styles.buttonText}>+</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button}>
+                    <Text style={styles.buttonText}>Fechar mesa</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     )
 }
@@ -101,5 +108,32 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         color: '#fff'
+    },
+    actions: {
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'space-between',
+        marginTop: 5
+    },
+    buttonAdd: {
+        backgroundColor: '#3fd1ff',
+        borderRadius: 4,
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '20%'
+    },
+    buttonText: {
+        color: '#101026',
+        fontSize: 18,
+        fontWeight: 'bold'
+    },
+    button: {
+        backgroundColor: "#3fffa3",
+        borderRadius: 4,
+        height: 40,
+        width: '75%',
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 })
