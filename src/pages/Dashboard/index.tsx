@@ -3,7 +3,7 @@ import { View, Text, SafeAreaView, StyleSheet, TextInput, TouchableOpacity } fro
 import {useNavigation} from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackParamsList } from "../../routes/app.routes";
-
+import { api } from "../../services/api";
 
 
 
@@ -14,8 +14,13 @@ export default function Dashboard(){
     async function openOrder(){
         if(number === '') return 
 
-        navigation.navigate('Order', {number: number, order_id: 'irruhhhhh' });
+        const response = await api.post('/orders/create', {
+            table: Number(number)
+        })
+
+        navigation.navigate('Order', {number: number, order_id: response.data.id });
         
+        setNumber('');
     }
 
     return(
@@ -60,7 +65,7 @@ const styles = StyleSheet.create({
         marginBottom: 24
     },
     input: {
-        width: '90%',
+        width: '100%',
         height: 60,
         backgroundColor: '#101026',
         borderRadius: 4,
@@ -70,7 +75,7 @@ const styles = StyleSheet.create({
         color: '#fff'
     },
     button: {
-        width: '90%',
+        width: '100%',
         height: 40,
         backgroundColor: '#3fffa3',
         borderRadius: 4,
