@@ -5,19 +5,10 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackParamsList } from "../../routes/app.routes";
 import { api } from "../../services/api";
 
-type RequestOrder = {
-    id: string;
-    table: number;
-    status: boolean;
-    total: number;
-    created_at: string
-  }
-
 
 export default function Dashboard(){
     const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>();
     const [table, setTable] = useState('');
-    const [data, setData] = useState<RequestOrder>();
 
 
     async function openOrder(){
@@ -26,7 +17,8 @@ export default function Dashboard(){
         const response = await api.post('/orders/create', {
             table: Number(table)
         })
-        navigation.navigate('Order', {number: table, order_id: data?.id});
+        
+        navigation.navigate('Order', {number: table, order_id: response.data.id});
         
         setTable('');
     }

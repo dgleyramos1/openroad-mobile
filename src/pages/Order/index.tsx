@@ -31,11 +31,7 @@ export default function Order(){
     
     async function handleCloseOrder(){
         try{
-            await api.delete(`/orders`, {
-                params: {
-                    order_id: route.params?.order_id
-                }
-            })
+            await api.delete(`/orders/${route.params?.order_id}`)
 
             navigation.goBack();
         }catch(err){
