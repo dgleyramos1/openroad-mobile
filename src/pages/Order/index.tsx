@@ -13,6 +13,7 @@ import { Feather } from '@expo/vector-icons';
 import { api } from '../../services/api';
 
 
+
 type RouteDetailParams = {
     Order: {
         number: string | number;
@@ -30,7 +31,7 @@ export default function Order(){
     
     async function handleCloseOrder(){
         try{
-            await api.delete('/orders', {
+            await api.delete(`/orders`, {
                 params: {
                     order_id: route.params?.order_id
                 }

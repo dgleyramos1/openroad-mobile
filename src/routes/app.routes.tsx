@@ -10,7 +10,7 @@ export type StackParamsList = {
     Dashboard: undefined;
     Order: {
         number: number | string;
-        order_id: string;
+        order_id: string | undefined;
     }
 }
 

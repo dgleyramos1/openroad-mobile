@@ -2,6 +2,8 @@ import React, {useState, createContext, ReactNode, useEffect} from "react";
 import { api} from "../services/api"; 
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { validateToken } from "../services/validToken";
+
 
 
 type AuthContextData = {
@@ -34,15 +36,21 @@ export function AuhtProvider({children}: AuhtProviderProps){
         token: ''
     });
     const [loadingAuth, setLoadingAuth] = useState(false);
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true);
 
     useEffect(()=> {
         async function getUser(){
             const userInfo = await AsyncStorage.getItem('@openroad');
             let hasUser: UserProps = JSON.parse(userInfo || '{}');
+            
             if(Object.keys(hasUser).length > 0){
-                api.defaults.headers.common['Authorization'] = `Bearer ${hasUser.token}`
-                setUser({token: hasUser.token})
+                if(validateToken(hasUser.token)){
+                    api.defaults.headers.common['Authorization'] = `Bearer ${hasUser.token}`
+                    setUser({token: hasUser.token})
+                    setLoading(false);
+                    return;
+                }
+                signOut()
             }
             setLoading(false);
         }
@@ -87,6 +95,7 @@ export function AuhtProvider({children}: AuhtProviderProps){
     }
 
     const isAuthenticated = !!user.token;
+
     return(
         <AuthContext.Provider
             value={{

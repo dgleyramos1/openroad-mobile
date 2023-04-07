@@ -1,8 +1,13 @@
 import axios from 'axios';
 
+import Constants from 'expo-constants';
+const { manifest } = Constants;
+const ipAddress = manifest?.debuggerHost?.split(':').shift();
+const url = `http://${ipAddress}:8080`;
+
+
 const api = axios.create({
-    baseURL: 'http://192.168.1.10:8080'
-})
+    baseURL: url
+});
 
-
-export {api};
+export { api };

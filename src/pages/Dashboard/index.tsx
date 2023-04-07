@@ -1,39 +1,48 @@
-import React, {useContext, useState} from "react";
+import React, {useState, useEffect, ChangeEvent} from "react";
 import { View, Text, SafeAreaView, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import {useNavigation} from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackParamsList } from "../../routes/app.routes";
 import { api } from "../../services/api";
 
+type RequestOrder = {
+    id: string;
+    table: number;
+    status: boolean;
+    total: number;
+    created_at: string
+  }
 
 
 export default function Dashboard(){
     const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>();
-    const [number, setNumber] = useState('');
+    const [table, setTable] = useState('');
+    const [data, setData] = useState<RequestOrder>();
+
 
     async function openOrder(){
-        if(number === '') return 
+        if(table === '') return 
 
         const response = await api.post('/orders/create', {
-            table: Number(number)
+            table: Number(table)
         })
-
-        navigation.navigate('Order', {number: number, order_id: response.data.id });
+        navigation.navigate('Order', {number: table, order_id: data?.id});
         
-        setNumber('');
+        setTable('');
     }
+
 
     return(
         <SafeAreaView style={styles.container}>
             <View style={styles.content}>
-                <Text style={styles.title}>Mesas</Text>
+                <Text style={styles.title}>Mesas {table}</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Número da mesa"
                     placeholderTextColor="#f0f0f0"
                     keyboardType="numeric"
-                    value={number}
-                    onChangeText={setNumber}
+                    value={table}
+                    onChangeText={setTable}
                 />
                 <TouchableOpacity
                     style={styles.button}
