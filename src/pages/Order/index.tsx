@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     View, 
     Text, 
@@ -21,13 +21,33 @@ type RouteDetailParams = {
     }
 }
 
+type CategoryProps = {
+    id: string;
+    name: string;
+}
 type OrderRouterProp = RouteProp<RouteDetailParams, 'Order'>;
 
 
 export default function Order(){
-    const navigation = useNavigation();
-
     const route = useRoute<OrderRouterProp>();
+    const navigation = useNavigation();
+    const [ category, setCategory ] = useState<CategoryProps[] | []>([]);
+    const [categorySelected, setCategorySelected] = useState<CategoryProps>();
+
+    const [amount, setAmount] = useState('1');
+    const [observation, setObservation] = useState('');
+
+    useEffect(() => {
+        async function loadInfo(){
+            const response = await api.get('/categories');
+
+            setCategory(response.data)
+            setCategorySelected(response.data[0])
+
+        }
+
+        loadInfo()
+    }, [])
     
     async function handleCloseOrder(){
         try{
@@ -49,21 +69,30 @@ export default function Order(){
                 </TouchableOpacity>
             </View>
 
+            {category.length !== 0 &&
+                <TouchableOpacity style={styles.input}>
+                    <Text style={{color: '#fff'}}>
+                        {categorySelected?.name}
+                    </Text>
+                </TouchableOpacity>
+            }
+
 
             <View style={styles.qtdContainer}>
                 <Text style={styles.qtdText}>Quantidade</Text>
                 <TextInput
                     style={[styles.input, {width: '60%', textAlign: 'center'}]}
-                    placeholder='1'
                     placeholderTextColor="#f0f0f0"
                     keyboardType='numeric'
-                    value='1'
+                    value={amount}
+                    onChangeText={setAmount}
                 />
                 <TextInput
                     style={[styles.input, {height: 80, fontSize: 18, alignItems: 'baseline'}]}
                     placeholder='Observações'
                     placeholderTextColor="#f0f0f0"
-
+                    value={observation}
+                    onChangeText={setObservation}
                 />
             </View>
             
