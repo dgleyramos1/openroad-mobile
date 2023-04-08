@@ -42,6 +42,11 @@ export type ItemProps = {
     price: number;
     status: boolean;
     draft: boolean;
+    product: {
+        id: string;
+        name: string;
+        description: string;
+    }
 }
 
 type OrderRouterProp = RouteProp<RouteDetailParams, 'Order'>;
@@ -86,14 +91,14 @@ export default function Order(){
     }, [categorySelected])
 
     useEffect(() => {
-        async function loadOrder(){
-            const response = await api.get(`/orders/${route.params?.order_id}`)
-            setOrder(response.data)
-            setItems(response.data?.items)
-        }
-
         loadOrder()
     }, [])
+
+    async function loadOrder(){
+        const response = await api.get(`/orders/${route.params?.order_id}`)
+        setOrder(response.data)
+        setItems(response.data?.items)
+    }
     
     async function handleCloseOrder(){
         try{
@@ -114,12 +119,46 @@ export default function Order(){
     }
 
     async function handleAdd(){
+        const response = await api.post(`/items/create/${order?.id}/${productSeleted?.id}`,{
+            amount: Number(amount),
+            observation: observation
+        })
 
+        let data ={
+            id: response.data.id,
+            amount: response.data.amount,
+            price: response.data.price,
+            status: response.data.status,
+            draft: response.data.draft,
+            product: {
+                id: response.data.product.id as string,
+                name: response.data.product.name as string,
+                description: response.data.product.description as string
+            }
+        }
+        setItems(oldArray => [...oldArray, data])
+    }
+
+    async function handleDeleteItem(item_id: string) {
+        await api.delete(`/items/${item_id}`)
+
+        let removeItem = items.filter(item => {
+            return (item.id !== item_id)
+        })
+
+        setItems(removeItem)
+    }
+
+    async function handleSendKitchen(item_id: string){
+        const response = await api.put(`/items/kitchen/${item_id}`)
+        loadOrder();
     }
 
     function handleGoBack(){
         navigation.navigate('Dashboard');
     }
+
+
 
     return (
         <View style={styles.container}>
@@ -128,13 +167,13 @@ export default function Order(){
             </TouchableOpacity>
             <View style={styles.header}>
                 <Text style={styles.title}>Mesa {order?.table}</Text>
-                <TouchableOpacity
+                {items.length === 0 && (
+                    <TouchableOpacity
                     onPress={handleCloseOrder}
-                    disabled={items.length !== 0}
-                    style={{opacity: items.length !== 0 ? 0.3 : 1}}
-                >
-                    <Feather name='trash-2' size={28} color="#ff3f4b"/>
-                </TouchableOpacity>
+                    >
+                        <Feather name='trash-2' size={28} color="#ff3f4b"/>
+                    </TouchableOpacity>
+                )}
             </View>
 
             {category.length !== 0 &&
@@ -183,11 +222,11 @@ export default function Order(){
                 style={{flex: 1, marginTop: 24}}
                 data={items}
                 keyExtractor={(item) => item.id}
-                renderItem={({item}) => <ListItem data={item}/>}
+                renderItem={({item}) => <ListItem data={item} deleteItem={handleDeleteItem} sendKicthen={handleSendKitchen}/>}
             />
 
             <View style={styles.contentTotal}>
-                <Text style={styles.value}>Total: {order?.total}</Text>
+                <Text style={styles.value}>Total: {order?.total} reais</Text>
                 <TouchableOpacity
                     style={[styles.button, {opacity: items.length === 0 ? 0.3 : 1}]}
                     disabled={items.length === 0}    
@@ -289,7 +328,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#3fffa3",
         borderRadius: 4,
         height: 40,
-        width: '65%',
+        width: '50%',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -299,8 +338,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     value: {
-        width: "25%",
-        fontSize: 22,
+        width: "40%",
+        fontSize: 20,
         color: '#ff3f4b'
     }
 })
