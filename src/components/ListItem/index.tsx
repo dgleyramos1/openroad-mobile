@@ -90,7 +90,7 @@ export function ListItem({data, deleteItem, sendKicthen, deliveredItem}: ItemsPr
                             onPress={handleKitchenItem}
                         >
                             <Feather 
-                                name='book-open'
+                                name='send'
                                 color="#fff"
                                 size={25}
                             />
