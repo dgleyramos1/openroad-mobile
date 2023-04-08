@@ -8,14 +8,52 @@ import {
 
 import {Feather} from '@expo/vector-icons';
 
+import {useNavigation, useRoute, RouteProp} from '@react-navigation/native'
+import { api } from "../../services/api";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { StackParamsList } from "../../routes/app.routes";
+
+
+type RouteDetailParams = {
+    FinishOrder: {
+        table: number | string;
+        order_id: string;
+        price: number
+    }
+}
+
+type FinishORderRouteProp = RouteProp<RouteDetailParams, 'FinishOrder'>
 
 export function FinishOrder(){
+
+    const route = useRoute<FinishORderRouteProp>();
+    const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>()
+
+    async function handleFinish(){
+        try{
+            await api.put(`/orders/finish/${route.params?.order_id}`)
+            navigation.popToTop();
+        }catch(err){
+            console.log("ERRO AO FINALIZAR, tente mais tarde");
+        }
+    }
+
+
     return(
         <View style={styles.container}>
-            <Text style={styles.alert}>Você deseja fecha essa mesa?</Text>
-            <Text style={styles.title}>Mesa 50</Text>
+            <Text style={styles.alert}>Você deseja fechar essa mesa?</Text>
+            <Text style={styles.title}>
+                Mesa {route.params?.table}
+            </Text>
 
-            <TouchableOpacity style={styles.button}>
+            <Text style={styles.alert}>
+                Total a pagar: {route.params?.price} reais
+            </Text>
+
+            <TouchableOpacity
+                style={styles.button}
+                onPress={handleFinish}    
+            >
                 <Text style={styles.buttonText}>Fechar Mesa</Text>
                 <Feather 
                     name="shopping-cart"
