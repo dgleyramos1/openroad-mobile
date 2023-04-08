@@ -151,16 +151,22 @@ export default function Order(){
 
     async function handleSendKitchen(item_id: string){
         const response = await api.put(`/items/kitchen/${item_id}`);
+        alert("Pedido enviado para cozinha!");
         loadOrder();
     }
 
     async function handleDeliverdItem(item_id: string){
         const response = await api.put(`/items/delivered/${item_id}`);
+        alert("Pedido entregue na mesa!");
         loadOrder();
     }
 
     function handleGoBack(){
         navigation.navigate('Dashboard');
+    }
+
+    function handleFinishOrder(){
+        navigation.navigate('FinishOrder')
     }
 
 
@@ -234,7 +240,8 @@ export default function Order(){
                 <Text style={styles.value}>Total: {order?.total} reais</Text>
                 <TouchableOpacity
                     style={[styles.button, {opacity: items.length === 0 ? 0.3 : 1}]}
-                    disabled={items.length === 0}    
+                    disabled={items.length === 0}
+                    onPress={handleFinishOrder}   
                 >
                     <Text style={styles.buttonText}>Fechar mesa</Text>
                 </TouchableOpacity>

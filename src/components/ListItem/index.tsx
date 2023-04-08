@@ -66,42 +66,49 @@ export function ListItem({data, deleteItem, sendKicthen, deliveredItem}: ItemsPr
 
     return(
         <View style={styles.container}>
-            <Text style={styles.item}>{item?.amount} - {item?.product.name} - {item?.price} reais</Text>
+            <View style={[styles.content, {width: !data.status ? '55%' : '100%'}]}>
+                <Text style={styles.item}>{item?.amount} - {item?.product.name}</Text>
+                <Text style={styles.item}>{item?.price} reais</Text>
+            </View>
 
             {data.draft && (
-                <TouchableOpacity
-                    onPress={handleDeleteItem}
-                >
-                    <Feather 
-                        name='trash-2'
-                        color="#ff3f4b"
-                        size={25}
-                    />
-                </TouchableOpacity>
-            )}
+                <View style={styles.actions}>
+                    {data.draft && (
+                        <TouchableOpacity
+                            onPress={handleDeleteItem}
+                        >
+                            <Feather 
+                                name='trash-2'
+                                color="#ff3f4b"
+                                size={25}
+                            />
+                        </TouchableOpacity>
+                    )}
 
-            {data.draft && (
-                <TouchableOpacity
-                    onPress={handleKitchenItem}
-                >
-                    <Feather 
-                        name='book-open'
-                        color="#fff"
-                        size={25}
-                    />
-                </TouchableOpacity>
-            )}
+                    {data.draft && (
+                        <TouchableOpacity
+                            onPress={handleKitchenItem}
+                        >
+                            <Feather 
+                                name='book-open'
+                                color="#fff"
+                                size={25}
+                            />
+                        </TouchableOpacity>
+                    )}
 
-            {data.draft && (
-                <TouchableOpacity
-                    onPress={handleDeliveredItem }
-                >
-                    <MaterialIcons 
-                        name='delivery-dining'
-                        color="#fff"
-                        size={25}
-                    />
-                </TouchableOpacity>
+                    {data.draft && (
+                        <TouchableOpacity
+                            onPress={handleDeliveredItem }
+                        >
+                            <MaterialIcons 
+                                name='delivery-dining'
+                                color="#3fff2e"
+                                size={25}
+                            />
+                        </TouchableOpacity>
+                    )}
+                </View>
             )}
         </View>
     )
@@ -122,7 +129,19 @@ const styles = StyleSheet.create({
         borderWidth: 0.3,
         borderColor: '#8a8a8a'
     },
+    content: {
+        width: '55%',
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: "center",
+        alignItems: 'flex-start'
+    },
     item: {
         color: '#fff'
+    },
+    actions: {
+        width: '40%',
+        justifyContent: 'space-around',
+        flexDirection: 'row'
     }
 })
