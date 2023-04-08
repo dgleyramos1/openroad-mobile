@@ -150,7 +150,12 @@ export default function Order(){
     }
 
     async function handleSendKitchen(item_id: string){
-        const response = await api.put(`/items/kitchen/${item_id}`)
+        const response = await api.put(`/items/kitchen/${item_id}`);
+        loadOrder();
+    }
+
+    async function handleDeliverdItem(item_id: string){
+        const response = await api.put(`/items/delivered/${item_id}`);
         loadOrder();
     }
 
@@ -222,7 +227,7 @@ export default function Order(){
                 style={{flex: 1, marginTop: 24}}
                 data={items}
                 keyExtractor={(item) => item.id}
-                renderItem={({item}) => <ListItem data={item} deleteItem={handleDeleteItem} sendKicthen={handleSendKitchen}/>}
+                renderItem={({item}) => <ListItem data={item} deleteItem={handleDeleteItem} sendKicthen={handleSendKitchen} deliveredItem={handleDeliverdItem}/>}
             />
 
             <View style={styles.contentTotal}>
@@ -267,7 +272,7 @@ const styles = StyleSheet.create({
     container:{
         flex: 1,
         backgroundColor: '#1d1d2e',
-        paddingVertical: '5%',
+        paddingVertical: '2%',
         paddingEnd: '4%',
         paddingStart: '4%'
     },
@@ -335,11 +340,12 @@ const styles = StyleSheet.create({
     contentTotal: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingTop: 5
     },
     value: {
         width: "40%",
         fontSize: 20,
-        color: '#ff3f4b'
+        color: '#fff'
     }
 })

@@ -5,7 +5,7 @@ import {
     StyleSheet,
     TouchableOpacity
 } from 'react-native';
-import {Feather} from '@expo/vector-icons'
+import {Feather, MaterialIcons } from '@expo/vector-icons'
 import { api } from '../../services/api';
 
 interface ItemsProps{
@@ -23,6 +23,7 @@ interface ItemsProps{
     };
     deleteItem: (item_id: string) => void;
     sendKicthen: (item_id: string) => void;
+    deliveredItem: (item_id: string) => void;
 }
 
 type ItemRequestProps ={
@@ -39,7 +40,7 @@ type ItemRequestProps ={
 }
 
 
-export function ListItem({data, deleteItem, sendKicthen}: ItemsProps){
+export function ListItem({data, deleteItem, sendKicthen, deliveredItem}: ItemsProps){
     const [item, setItem] = useState<ItemRequestProps>();
 
     function handleDeleteItem(){
@@ -47,6 +48,10 @@ export function ListItem({data, deleteItem, sendKicthen}: ItemsProps){
     }
     function handleKitchenItem(){
         sendKicthen(data.id)
+    }
+
+    function handleDeliveredItem(){
+        deliveredItem(data.id)
     }
 
     useEffect(() => {
@@ -74,12 +79,25 @@ export function ListItem({data, deleteItem, sendKicthen}: ItemsProps){
                     />
                 </TouchableOpacity>
             )}
+
             {data.draft && (
                 <TouchableOpacity
                     onPress={handleKitchenItem}
                 >
                     <Feather 
                         name='book-open'
+                        color="#fff"
+                        size={25}
+                    />
+                </TouchableOpacity>
+            )}
+
+            {data.draft && (
+                <TouchableOpacity
+                    onPress={handleDeliveredItem }
+                >
+                    <MaterialIcons 
+                        name='delivery-dining'
                         color="#fff"
                         size={25}
                     />
