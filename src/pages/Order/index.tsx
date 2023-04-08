@@ -5,13 +5,18 @@ import {
     StyleSheet,
     TouchableOpacity,
     TextInput,
-    Modal
+    Modal,
+    FlatList
 } from 'react-native';
 
 import { useRoute, RouteProp, useNavigation } from '@react-navigation/native';
 import { Feather } from '@expo/vector-icons';
 import { api } from '../../services/api';
 import { ModalPicker } from '../../components/ModalPicker';
+import { ListItem } from '../../components/ListItem';
+import { OrderProps } from '../Dashboard';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { StackParamsList } from '../../routes/app.routes';
 
 
 
@@ -31,17 +36,27 @@ export type ProductsProps ={
     id: string;
     name: string;
 }
+export type ItemProps = {
+    id: string;
+    amount: number | string;
+    price: number;
+    status: boolean;
+    draft: boolean;
+}
+
 type OrderRouterProp = RouteProp<RouteDetailParams, 'Order'>;
 
 
 export default function Order(){
     const route = useRoute<OrderRouterProp>();
-    const navigation = useNavigation();
+    const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>();
+    const [order, setOrder] = useState<OrderProps | undefined>();
     const [ category, setCategory ] = useState<CategoryProps[] | []>([]);
     const [categorySelected, setCategorySelected] = useState<CategoryProps | undefined>();
 
     const [amount, setAmount] = useState('1');
     const [observation, setObservation] = useState('');
+    const [items, setItems] =useState<ItemProps[] | []>([]);
 
     const [products, setProducts] = useState<ProductsProps[] | []>([]);
     const [productSeleted, setProductSelected] = useState<ProductsProps | undefined>()
@@ -69,6 +84,16 @@ export default function Order(){
 
         loadProducts();
     }, [categorySelected])
+
+    useEffect(() => {
+        async function loadOrder(){
+            const response = await api.get(`/orders/${route.params?.order_id}`)
+            setOrder(response.data)
+            setItems(response.data?.items)
+        }
+
+        loadOrder()
+    }, [])
     
     async function handleCloseOrder(){
         try{
@@ -88,12 +113,26 @@ export default function Order(){
         setProductSelected(item)
     }
 
+    async function handleAdd(){
+
+    }
+
+    function handleGoBack(){
+        navigation.navigate('Dashboard');
+    }
 
     return (
         <View style={styles.container}>
+            <TouchableOpacity onPress={handleGoBack}>
+                <Feather name='arrow-left' size={28} color="#3fffa3"/>
+            </TouchableOpacity>
             <View style={styles.header}>
-                <Text style={styles.title}>Mesa {route.params.number}</Text>
-                <TouchableOpacity onPress={handleCloseOrder}>
+                <Text style={styles.title}>Mesa {order?.table}</Text>
+                <TouchableOpacity
+                    onPress={handleCloseOrder}
+                    disabled={items.length !== 0}
+                    style={{opacity: items.length !== 0 ? 0.3 : 1}}
+                >
                     <Feather name='trash-2' size={28} color="#ff3f4b"/>
                 </TouchableOpacity>
             </View>
@@ -124,20 +163,35 @@ export default function Order(){
                     value={amount}
                     onChangeText={setAmount}
                 />
+            </View>
+            
+            <View style={styles.actions}>
+                <TouchableOpacity style={styles.buttonAdd} onPress={handleAdd}>
+                    <Text style={styles.buttonText}>+</Text>
+                </TouchableOpacity>
                 <TextInput
-                    style={[styles.input, {height: 80, fontSize: 18, alignItems: 'baseline'}]}
+                    style={[styles.input, {height: 60, fontSize: 16, alignItems: 'baseline', width: '75%'}]}
                     placeholder='Observações'
                     placeholderTextColor="#f0f0f0"
                     value={observation}
                     onChangeText={setObservation}
                 />
             </View>
-            
-            <View style={styles.actions}>
-                <TouchableOpacity style={styles.buttonAdd}>
-                    <Text style={styles.buttonText}>+</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.button}>
+
+            <FlatList
+                showsVerticalScrollIndicator={false}
+                style={{flex: 1, marginTop: 24}}
+                data={items}
+                keyExtractor={(item) => item.id}
+                renderItem={({item}) => <ListItem data={item}/>}
+            />
+
+            <View style={styles.contentTotal}>
+                <Text style={styles.value}>Total: {order?.total}</Text>
+                <TouchableOpacity
+                    style={[styles.button, {opacity: items.length === 0 ? 0.3 : 1}]}
+                    disabled={items.length === 0}    
+                >
                     <Text style={styles.buttonText}>Fechar mesa</Text>
                 </TouchableOpacity>
             </View>
@@ -153,7 +207,7 @@ export default function Order(){
                     selectedItem={handleChangeCategory}
                 />
             </Modal>
-            
+
             <Modal
                 transparent={true}
                 visible={modalProductVisible}
@@ -221,7 +275,7 @@ const styles = StyleSheet.create({
     buttonAdd: {
         backgroundColor: '#3fd1ff',
         borderRadius: 4,
-        height: 40,
+        height: 60,
         justifyContent: 'center',
         alignItems: 'center',
         width: '20%'
@@ -235,8 +289,18 @@ const styles = StyleSheet.create({
         backgroundColor: "#3fffa3",
         borderRadius: 4,
         height: 40,
-        width: '75%',
+        width: '65%',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    contentTotal: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+    },
+    value: {
+        width: "25%",
+        fontSize: 22,
+        color: '#ff3f4b'
     }
 })

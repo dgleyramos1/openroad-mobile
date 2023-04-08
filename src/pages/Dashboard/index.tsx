@@ -1,15 +1,39 @@
-import React, {useState, useEffect, ChangeEvent} from "react";
-import { View, Text, SafeAreaView, StyleSheet, TextInput, TouchableOpacity } from "react-native";
+import React, {useState, useEffect} from "react";
+import {
+    View,
+    Text,
+    SafeAreaView, 
+    StyleSheet, 
+    TextInput, 
+    TouchableOpacity,
+    FlatList
+} from "react-native";
 import {useNavigation} from '@react-navigation/native';
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackParamsList } from "../../routes/app.routes";
 import { api } from "../../services/api";
+import { ListOrder } from "../../components/ListOrder";
+import { ItemProps } from "../Order";
 
+export type OrderProps = {
+    id: string;
+    table: number | string;
+    status: boolean;
+    total: number;
+}
 
 export default function Dashboard(){
     const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>();
     const [table, setTable] = useState('');
+    const [orders, setOrders] = useState<OrderProps[] | []>([]);
 
+    useEffect(() => {
+        async function loadOrders(){
+            const response = await api.get('/orders')
+            setOrders(response.data)
+        }
+        loadOrders()
+    },[table])
 
     async function openOrder(){
         if(table === '') return 
@@ -27,7 +51,7 @@ export default function Dashboard(){
     return(
         <SafeAreaView style={styles.container}>
             <View style={styles.content}>
-                <Text style={styles.title}>Mesas {table}</Text>
+                <Text style={styles.title}>Mesas</Text>
                 <TextInput
                     style={styles.input}
                     placeholder="Número da mesa"
@@ -43,6 +67,13 @@ export default function Dashboard(){
                     <Text style={styles.buttonText}>Abrir mesa</Text>
                 </TouchableOpacity>
             </View>
+            <FlatList
+                showsVerticalScrollIndicator={false}
+                style={{flex: 1, marginTop: 24, width: '90%'}}
+                data={orders}
+                keyExtractor={(order) => order.id}
+                renderItem={({item}) => <ListOrder data={item}/>}
+            />
         </SafeAreaView>
     )
 }
