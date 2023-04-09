@@ -6,7 +6,6 @@ import { AuhtProvider } from './src/contexts/AuthContext';
 
 export default function App() {
 
-  
   return (
     <NavigationContainer>
       <AuhtProvider>

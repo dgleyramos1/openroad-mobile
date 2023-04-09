@@ -13,7 +13,6 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StackParamsList } from "../../routes/app.routes";
 import { api } from "../../services/api";
 import { ListOrder } from "../../components/ListOrder";
-import { ItemProps } from "../Order";
 
 export type OrderProps = {
     id: string;
@@ -27,13 +26,12 @@ export default function Dashboard(){
     const [table, setTable] = useState('');
     const [orders, setOrders] = useState<OrderProps[] | []>([]);
 
-    useEffect(() => {
-        async function loadOrders(){
-            const response = await api.get('/orders')
-            setOrders(response.data)
-        }
-        loadOrders()
-    },[table])
+
+    loadOrders()
+    async function loadOrders(){
+        const response = await api.get('/orders')
+        setOrders(response.data)
+    }
 
     async function openOrder(){
         if(table === '') return 

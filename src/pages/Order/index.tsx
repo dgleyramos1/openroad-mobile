@@ -162,7 +162,7 @@ export default function Order(){
     }
 
     function handleGoBack(){
-        navigation.navigate('Dashboard');
+        navigation.popToTop();
     }
 
     function handleFinishOrder(){
