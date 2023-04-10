@@ -14,6 +14,9 @@ import { StackParamsList } from "../../routes/app.routes";
 import { api } from "../../services/api";
 import { ListOrder } from "../../components/ListOrder";
 
+
+
+
 export type OrderProps = {
     id: string;
     table: number | string;
@@ -25,6 +28,8 @@ export default function Dashboard(){
     const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>();
     const [table, setTable] = useState('');
     const [orders, setOrders] = useState<OrderProps[] | []>([]);
+
+    
 
 
     loadOrders()

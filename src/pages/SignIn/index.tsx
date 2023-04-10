@@ -12,8 +12,10 @@ import { AuthContext } from '../../contexts/AuthContext';
 export default function SignIn(){
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [ip, setIp] = useState("");
+    const [port, setPort] = useState("");
 
-    const {signIn, loadingAuth} = useContext(AuthContext);
+    const {signIn, loadingAuth, addIpAddress, haveIpAddress} = useContext(AuthContext);
 
     async function handleLogin(){
         if(username === '' || password === ''){
@@ -23,39 +25,81 @@ export default function SignIn(){
         await signIn({username, password});
     }
 
+    async function handleIp(){
+        if(ip === '' || port === '') return
+
+        const ipAdress = `${ip}:${port}`
+
+        await addIpAddress({ip : ipAdress});
+    }
+
 
     return(
-        <View style={styles.container}>
-            <Text style={styles.logo}>OpenRoad</Text>
-            <View style={styles.inputContainer}>
-                <TextInput 
-                    placeholder='Digite seu usuário'
-                    style={styles.input}
-                    placeholderTextColor="#f0f0f0"
-                    value={username}
-                    onChangeText={setUsername}
-                />
-                <TextInput 
-                    placeholder='Digite sua senha'
-                    style={styles.input}
-                    placeholderTextColor="#f0f0f0"
-                    value={password}
-                    onChangeText={setPassword}
-                />
-
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={handleLogin}
-                >
-                    {loadingAuth ? (
-                        <ActivityIndicator size={25} color="#fff"/>
-                    ): (
-                        <Text style={styles.buttonText}>Acessar</Text>
-                    )}
-                </TouchableOpacity>
+        
+        <>
+            {haveIpAddress ? (
+                <View style={styles.container}>
+                    <Text style={styles.logo}>OpenRoad</Text>
+                    <View style={styles.inputContainer}>
+                        <TextInput 
+                            placeholder='Digite seu usuário'
+                            style={styles.input}
+                            placeholderTextColor="#f0f0f0"
+                            value={username}
+                            onChangeText={setUsername}
+                        />
+                        <TextInput 
+                            placeholder='Digite sua senha'
+                            style={styles.input}
+                            placeholderTextColor="#f0f0f0"
+                            value={password}
+                            onChangeText={setPassword}
+                        />
+        
+                        <TouchableOpacity
+                            style={styles.button}
+                            onPress={handleLogin}
+                        >
+                            {loadingAuth ? (
+                                <ActivityIndicator size={25} color="#fff"/>
+                            ): (
+                                <Text style={styles.buttonText}>Acessar</Text>
+                            )}
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            ) : (
+                <View style={styles.container}>
+                <Text style={styles.title}>Coloque o endereço IP da aplicação desktop!</Text>
+                <View style={[styles.inputContainer, {flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between'}]}>
+                    <TextInput 
+                        placeholder='IP'
+                        style={[styles.input, {width: '65%'}]}
+                        placeholderTextColor="#f0f0f0"
+                        value={ip}
+                        onChangeText={setIp}
+                    />
+                    <TextInput 
+                        placeholder='Port'
+                        style={[styles.input, {width: '30%'}]}
+                        placeholderTextColor="#f0f0f0"
+                        value={port}
+                        onChangeText={setPort}
+                    />
+    
+                    <TouchableOpacity
+                        style={styles.button}
+                        onPress={handleIp}
+                    >
+                        <Text style={styles.buttonText}>Adicionar</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-        </View>
+            )
+        }
+        </>
     )
+    
 }
 
 const styles = StyleSheet.create({  
@@ -78,7 +122,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 14
     },
     input: {
-        width: '95%',
+        width: '100%',
         height: 40,
         backgroundColor: '#101026',
         marginBottom: 12,
@@ -87,7 +131,7 @@ const styles = StyleSheet.create({
         color: '#fff'
     },
     button: {
-        width: '95%',
+        width: '100%',
         height: 40,
         backgroundColor: '#3fffa3',
         justifyContent: 'center',
@@ -97,5 +141,9 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         color: '#101026'
+    },
+    title: {
+        color: '#fff',
+        fontSize: 16
     }
 });
