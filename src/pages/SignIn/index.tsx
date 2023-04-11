@@ -7,6 +7,7 @@ import {View,
     ActivityIndicator
 } from 'react-native';
 import { AuthContext } from '../../contexts/AuthContext';
+import {Ionicons} from '@expo/vector-icons'
 
 
 export default function SignIn(){
@@ -14,6 +15,7 @@ export default function SignIn(){
     const [password, setPassword] = useState("");
     const [ip, setIp] = useState("");
     const [port, setPort] = useState("");
+    const [eye, setEye] = useState(true)
 
     const {signIn, loadingAuth, addIpAddress, haveIpAddress} = useContext(AuthContext);
 
@@ -33,6 +35,10 @@ export default function SignIn(){
         await addIpAddress({ip : ipAdress});
     }
 
+    function handleEyePassword(){
+        setEye(!eye);
+    }
+
 
     return(
         
@@ -48,13 +54,19 @@ export default function SignIn(){
                             value={username}
                             onChangeText={setUsername}
                         />
-                        <TextInput 
-                            placeholder='Digite sua senha'
-                            style={styles.input}
-                            placeholderTextColor="#f0f0f0"
-                            value={password}
-                            onChangeText={setPassword}
-                        />
+                        <View style={styles.inputArea}>
+                            <TextInput 
+                                placeholder='Digite sua senha'
+                                style={[styles.input, {width: '85%', marginBottom: 0}]}
+                                placeholderTextColor="#f0f0f0"
+                                value={password}
+                                onChangeText={setPassword}
+                                secureTextEntry={eye}
+                            />
+                            <TouchableOpacity style={styles.icon} onPress={handleEyePassword}>
+                                <Ionicons name='eye' color="#fff" size={25}/>
+                            </TouchableOpacity>
+                        </View>
         
                         <TouchableOpacity
                             style={styles.button}
@@ -121,6 +133,17 @@ const styles = StyleSheet.create({
         paddingVertical: 32,
         paddingHorizontal: 14
     },
+    inputArea: {
+        flexDirection: 'row',
+        width: '100%',
+        backgroundColor: '#101026',
+        borderRadius: 4,
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingVertical: 8,
+        marginBottom: 12,
+        height: 40
+    },
     input: {
         width: '100%',
         height: 40,
@@ -145,5 +168,10 @@ const styles = StyleSheet.create({
     title: {
         color: '#fff',
         fontSize: 16
+    },
+    icon: {
+        width: '15%',
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });

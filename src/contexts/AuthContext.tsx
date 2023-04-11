@@ -57,7 +57,6 @@ export function AuhtProvider({children}: AuhtProviderProps){
             
             if(Object.keys(hasIp).length > 0){
                 api.defaults.baseURL = `http://${hasIp}`
-                console.log(hasIp)
                 setIp(hasIp);
             }
             if(Object.keys(hasUser).length > 0){
@@ -65,12 +64,10 @@ export function AuhtProvider({children}: AuhtProviderProps){
                     api.defaults.headers.common['Authorization'] = `Bearer ${hasUser.token}`
                     setUser({token: hasUser.token})
                     setLoading(false);
-                    
                     return;
                 }
                 signOut()
             }
-            
             setLoading(false);
         }
         getUser()
