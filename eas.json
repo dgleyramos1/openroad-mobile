@@ -17,8 +17,12 @@
       }
     },
     "production": {
+      "android": {
+        "image": "latest"
+      },
       "ios": {
-        "resourceClass": "m-medium"
+        "resourceClass": "m-medium",
+        "image": "latest"
       }
     }
   },
