@@ -76,7 +76,7 @@ export function AuhtProvider({children}: AuhtProviderProps){
 
     async function signIn({username, password}: SignInProps){
         setLoadingAuth(true);
-
+        console.log("Iniciando login")
         try{
             const response = await api.post('/login', {
                 username,
@@ -90,6 +90,7 @@ export function AuhtProvider({children}: AuhtProviderProps){
             await AsyncStorage.setItem('@openroad', JSON.stringify(data));
 
             api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+            api.defaults.headers["Access-Control-Allow-Origin"] = "*"
             
             setUser({token});
 

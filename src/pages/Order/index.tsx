@@ -42,6 +42,8 @@ export type ItemProps = {
     price: number;
     status: boolean;
     draft: boolean;
+    delivered: boolean;
+    kitchen: boolean;
     product: {
         id: string;
         name: string;
@@ -130,6 +132,8 @@ export default function Order(){
             price: response.data.price,
             status: response.data.status,
             draft: response.data.draft,
+            delivered: response.data.delivered,
+            kitchen: response.data.kitchen,
             product: {
                 id: response.data.product.id as string,
                 name: response.data.product.name as string,
@@ -137,6 +141,7 @@ export default function Order(){
             }
         }
         setItems(oldArray => [...oldArray, data])
+        setObservation("")
     }
 
     async function handleDeleteItem(item_id: string) {

@@ -15,6 +15,8 @@ interface ItemsProps{
         price: number;
         status: boolean;
         draft: boolean;
+        delivered: boolean;
+        kitchen: boolean;
         product: {
             id: string;
             name: string;
@@ -32,6 +34,8 @@ type ItemRequestProps ={
     price: number;
     status: boolean;
     draft: boolean;
+    delivered: boolean;
+    kitchen: boolean;
     product: {
         id: string;
         name: string;
@@ -68,6 +72,7 @@ export function ListItem({data, deleteItem, sendKicthen, deliveredItem}: ItemsPr
         <View style={styles.container}>
             <View style={[styles.content, {width: !data.status ? '55%' : '100%'}]}>
                 <Text style={styles.item}>{item?.amount} - {item?.product.name}</Text>
+                <Text style={styles.item}>{item?.product.description}</Text>
                 <Text style={styles.item}>{item?.price} reais</Text>
             </View>
 
@@ -80,31 +85,31 @@ export function ListItem({data, deleteItem, sendKicthen, deliveredItem}: ItemsPr
                             <Feather 
                                 name='trash-2'
                                 color="#ff3f4b"
-                                size={25}
+                                size={30}
                             />
                         </TouchableOpacity>
                     )}
 
-                    {data.draft && (
+                    {!data.kitchen && (
                         <TouchableOpacity
                             onPress={handleKitchenItem}
                         >
                             <Feather 
                                 name='send'
                                 color="#fff"
-                                size={25}
+                                size={30}
                             />
                         </TouchableOpacity>
                     )}
 
-                    {data.draft && (
+                    {!data.delivered && (
                         <TouchableOpacity
                             onPress={handleDeliveredItem }
                         >
                             <MaterialIcons 
                                 name='delivery-dining'
                                 color="#3fff2e"
-                                size={25}
+                                size={30}
                             />
                         </TouchableOpacity>
                     )}
@@ -141,7 +146,8 @@ const styles = StyleSheet.create({
     },
     actions: {
         width: '40%',
-        justifyContent: 'space-around',
+        justifyContent: 'flex-end',
+        columnGap: 10,
         flexDirection: 'row'
     }
 })
